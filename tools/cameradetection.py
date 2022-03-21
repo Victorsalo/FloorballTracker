@@ -5,6 +5,7 @@ In its second version it is to be used on a video file.
 """
 import subprocess
 import os
+import shlex
 # import numpy as np
 import cv2 as cv
 from sys import argv
@@ -38,10 +39,7 @@ def find_difference(img1, img2, roi):
     denoised_thresh = cv.morphologyEx(thresh, cv.MORPH_OPEN, element)
     # This number should be calculated based on the size of the roi.
     difference_threshold = 20
-    if cv.countNonZero(denoised_thresh) < difference_threshold:
-        return False
-    else:
-        return True
+    return cv.countNonZero(denoised_thresh) > difference_threshold
 
 
 def setupROI(img):
@@ -66,8 +64,8 @@ def from_images(img_path1, img_path2):
     find_difference(img1, img2, roi)
 
 
-def from_video(video_path):
-    video = cv.VideoCapture(video_path)
+def from_video(videopath):
+    video = cv.VideoCapture(videopath)
     if not video.isOpened():
         print("Video can not be loaded")
         # Replace with exception and try again clause in caller.
@@ -93,7 +91,7 @@ def from_video(video_path):
             if running:
                 timestamps.append([video.get(cv.CAP_PROP_POS_MSEC)])
             else:
-                timestamps[-1].append([video.get(cv.CAP_PROP_POS_MSEC)])
+                timestamps[-1].append(video.get(cv.CAP_PROP_POS_MSEC))
     video.release()
     return timestamps
 
@@ -147,15 +145,17 @@ def crop_ffmpeg(videopath, roi=None, order="", output=CROP_DIR):
     ystart = roi[1]
     width = roi[2]
     hight = roi[3]
-    part_name = os.path.join(output, file_name + order + "." + format)
-    subprocess.call("ffmpeg", f"-i inputfile -filter:v 'crop={width}:{hight}:{xstart}:{ystart}' {part_name}")
+    part_name = os.path.join(output, file_name + order + format)
+    process = f"ffmpeg -i {videopath} -filter:v 'crop={width}:{hight}:{xstart}:{ystart}' {part_name}"
+    subprocess.call(shlex.split(process))
     return roi
 
 
-def crop_from_dir(videopath, dir=CUT_DIR):
-    parts = os.listdir(dir)
-    roi = crop_ffmpeg(parts[0], order="0")
-    for part in parts[1:]:
+def crop_from_dir(videopath, video_dir=CUT_DIR):
+    parts = os.listdir(video_dir)
+    parts_abs = [os.path.join(video_dir, part) for part in parts]
+    roi = crop_ffmpeg(parts_abs[0])
+    for part in parts_abs[1:]:
         order = "".join(filter(str.isdigit, part))
         crop_ffmpeg(part, roi, order)
 
@@ -165,11 +165,12 @@ def cut_ffmpeg(videopath, timestamps, output=CUT_DIR):
     Maybe put things in a better folder
     """
     file_name, format = os.path.splitext(os.path.basename(videopath))
-    timestamps = [[t[0]*1000, t[1]*1000] for t in timestamps]
+    timestamps = [[t[0]/1000, t[1]/1000] for t in timestamps]
     cnt = 0
     for interval in timestamps:
-        part_name = os.path.join(output, file_name + cnt + "." + format)
-        subprocess.call("ffmpeg", f"-ss {interval[0]} -i {videopath} -c copy -to {interval[1]} {part_name}")
+        part_name = os.path.join(output, file_name + str(cnt) + format)
+        process = f"ffmpeg -ss {interval[0]} -i {videopath} -c copy -to {interval[1]} {part_name}"
+        subprocess.run(shlex.split(process))
         cnt += 1
 
 
@@ -180,6 +181,13 @@ def create_dirs():
         os.mkdir(CUT_DIR)
     if not os.path.exists(CROP_DIR):
         os.mkdir(CROP_DIR)
+
+
+def remove_dirs():
+    """
+    TODO: Should remove the dirs, and their content, created by create_dirs().
+    """
+    pass
 
 
 def main(isvideo, paths):

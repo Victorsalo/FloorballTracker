@@ -1,5 +1,6 @@
 # Specific to FloorballTracker
 output/
+tmp/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

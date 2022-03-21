@@ -5,9 +5,9 @@ import average
 
 
 def run(videopath):
-    # detect timestamps
+    # detect timestamps, works
     timestamps = cameradetection.from_video(videopath)
-    # cut video
+    # cut video, works but video looks a little weird.
     cameradetection.create_dirs()
     cameradetection.cut_ffmpeg(videopath, timestamps)
     # crop videos

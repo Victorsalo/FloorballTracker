@@ -6,6 +6,7 @@ In its second version it is to be used on a video file.
 import subprocess
 import os
 import shlex
+import shutil
 # import numpy as np
 import cv2 as cv
 from sys import argv
@@ -187,7 +188,7 @@ def remove_dirs():
     """
     TODO: Should remove the dirs, and their content, created by create_dirs().
     """
-    pass
+    shutil.rmtree(TMP_DIR)
 
 
 def main(isvideo, paths):

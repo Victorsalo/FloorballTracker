@@ -19,10 +19,14 @@ def run(videopath):
         pass
     # detect numbers and track players
     # transform points
+    players = []  # placeholder
     # calculate values
+    processed_players = average.process_all(players, 30)  # Add detection
     # write values to file
+    average.write_to_file(processed_players)
     # upload values.
     # clean up
+    cameradetection.remove_dirs()
     pass
 
 

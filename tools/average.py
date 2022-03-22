@@ -80,6 +80,17 @@ def process_all(all_player_data, fps):
         processed_players.append([player[0], [player[1][0],
                                   xs, ys, speeds, accelerations]])
     return processed_players
+#[round(x, 0) for x in values]
+#[[playernumber, [[frame,], [x,], [y,], [speed,], [acceleration,]]],]
+def round_data(values):
+    for i in range(len(values)):
+        for j in range(len(values[i][1])):
+            for k in range(len(values[i][1][j])):
+                values[i][1][j][k] = round(values[i][1][j][k], 2)
+    return values
+
+
+
 
 
 def write_to_file(processed_players):

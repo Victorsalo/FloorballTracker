@@ -42,7 +42,7 @@ def detect():
                 f"python3 {track_tool} --source {abs_path_part} "
                 "--yolo_model yolov5n.pt --classes 0 --save-txt "
                 f"--project {cameradetection.RESULT_DIR} "
-                "--name test"
+                "--name test --exist-ok"
                 )
         subprocess.run(shlex.split(command))
     os.chdir(orig_path)

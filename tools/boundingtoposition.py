@@ -43,7 +43,7 @@ def Read(bounding_box_txt):
     BusData = X.read()
     BusDataList = BusData.split()
     BusDataArray = np.array(BusDataList)
-    num_lines = sum(1 for line in open('gear360FisheyeKarhall.txt'))
+    num_lines = sum(1 for line in open("bounding_box_txt"))
     BusDataReshaped = BusDataArray.reshape(num_lines, 10)  # Make a matrix out of 1D Array
     BusDataFrame = pandas.DataFrame(BusDataReshaped, columns=['f', 'id', 'x', 'y', 'w', 'h', 'u1', 'u2', 'u3', 'u4'])
     return BusDataFrame
@@ -110,8 +110,13 @@ def projection(bounding_box_txt, calibration_matrix_yaml):
     return playerData
 
 
-playerData = projection("gear360FisheyeKarhall.txt", "calibration_matrix.yaml")
-playerData = average.process_all(playerData, 60)
-playerData = average.round_data(playerData)
-average.write_to_file(playerData)
+def test():
+    playerData = projection("gear360FisheyeKarhall.txt", "calibration_matrix.yaml")
+    playerData = average.process_all(playerData, 60)
+    playerData = average.round_data(playerData)
+    average.write_to_file(playerData)
+
+
+if __name__ == "__main__":
+    test()
 # done

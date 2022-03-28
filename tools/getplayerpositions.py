@@ -5,9 +5,10 @@ from os.path import join
 import shlex
 import cameradetection
 import average
+import boundingtoposition
 
 
-def run(videopath):
+def run(videopath, camera_calibration_matrix):
     # detect timestamps, works
     timestamps = cameradetection.from_video(videopath)
     # cut video, works but video looks a little weird.
@@ -20,11 +21,15 @@ def run(videopath):
     # Add path for Yolov5_DeepSort_Pytorch to work
     # detect numbers and track players
     # transform points
-    players = []  # placeholder
+    all_players = []
+    for part in os.listdir(cameradetection.RESULT_DIR):
+        players = boundingtoposition.projection(part, camera_calibration_matrix)
+        for player in players:
+            all_players.append(player)
     # calculate values
-    processed_players = average.process_all(players, 30)  # Add detection
+    processed_players = average.process_all(all_players, 30)  # Add detection
     # write values to file
-    average.write_to_file(processed_players)
+    average.write_to_file(processed_players, cameradetection.OUTPUT)
     # upload values.
     # clean up
     cameradetection.remove_dirs()

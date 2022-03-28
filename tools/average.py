@@ -80,8 +80,10 @@ def process_all(all_player_data, fps):
         processed_players.append([player[0], [player[1][0],
                                   xs, ys, speeds, accelerations]])
     return processed_players
-#[round(x, 0) for x in values]
-#[[playernumber, [[frame,], [x,], [y,], [speed,], [acceleration,]]],]
+
+
+# [round(x, 0) for x in values]
+# [[playernumber, [[frame,], [x,], [y,], [speed,], [acceleration,]]],]
 def round_data(values):
     for i in range(len(values)):
         for j in range(len(values[i][1])):
@@ -90,10 +92,7 @@ def round_data(values):
     return values
 
 
-
-
-
-def write_to_file(processed_players):
+def write_to_file(processed_players, directory):
     """
     Writes the output of process_all() to a csv-file.
 
@@ -101,11 +100,16 @@ def write_to_file(processed_players):
     processed_players -- Output of process_all().
     """
 
+    taken = {}
     for player in processed_players:
+        id = player[0]
+        while id in taken:
+            id += 100
         with open(f"player{player[0]}.csv", 'w',
                   encoding='UTF8', newline='') as f:
             writer = csv.writer(f)
             writer.writerows(player[1])
+        taken.add(id)
 
 
 def test():

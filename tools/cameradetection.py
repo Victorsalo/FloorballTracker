@@ -16,6 +16,7 @@ TMP_DIR = os.path.join(ROOT_DIR, "tmp")
 CROP_DIR = os.path.join(TMP_DIR, "crop")
 CUT_DIR = os.path.join(TMP_DIR, "cut")
 RESULT_DIR = os.path.join(TMP_DIR, "results")
+OUTPUT_DIR = os.path.join(ROOT_DIR, "output")
 
 
 def find_difference(img1, img2, roi):
@@ -185,6 +186,8 @@ def create_dirs():
         os.mkdir(CROP_DIR)
     if not os.path.exists(RESULT_DIR):
         os.mkdir(RESULT_DIR)
+    if not os.path.exists(OUTPUT_DIR):
+        os.mkdir(OUTPUT_DIR)
 
 
 def remove_dirs():

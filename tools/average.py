@@ -1,6 +1,7 @@
 from math import sqrt
-import numpy as np
+import os
 import csv
+import numpy as np
 from scipy.ndimage.filters import uniform_filter1d
 
 
@@ -100,13 +101,14 @@ def write_to_file(processed_players, directory):
     processed_players -- Output of process_all().
     """
 
-    taken = {}
+    taken = set()
     for player in processed_players:
         id = player[0]
         while id in taken:
             id += 100
-        with open(f"player{player[0]}.csv", 'w',
-                  encoding='UTF8', newline='') as f:
+        name = f"player{id}.csv"
+        fpath = os.path.join(directory, name)
+        with open(fpath, 'w', encoding='UTF8', newline='') as f:
             writer = csv.writer(f)
             writer.writerows(player[1])
         taken.add(id)

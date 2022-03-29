@@ -43,7 +43,7 @@ def Read(bounding_box_txt):
     BusData = X.read()
     BusDataList = BusData.split()
     BusDataArray = np.array(BusDataList)
-    num_lines = sum(1 for line in open("bounding_box_txt"))
+    num_lines = sum(1 for line in open(bounding_box_txt))
     BusDataReshaped = BusDataArray.reshape(num_lines, 10)  # Make a matrix out of 1D Array
     BusDataFrame = pandas.DataFrame(BusDataReshaped, columns=['f', 'id', 'x', 'y', 'w', 'h', 'u1', 'u2', 'u3', 'u4'])
     return BusDataFrame

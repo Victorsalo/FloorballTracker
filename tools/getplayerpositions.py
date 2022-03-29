@@ -8,31 +8,50 @@ import average
 import boundingtoposition
 
 
-def run(videopath, camera_calibration_matrix):
-    # detect timestamps, works
-    timestamps = cameradetection.from_video(videopath)
-    # cut video, works but video looks a little weird.
-    cameradetection.create_dirs()
-    cameradetection.cut_ffmpeg(videopath, timestamps)
-    # crop videos
-    cameradetection.crop_from_dir(videopath)
-    # detect players
-    detect()
-    # Add path for Yolov5_DeepSort_Pytorch to work
+def run(videopath, camera_calibration_matrix, detect=True, cleanup=True):
+    if detect:
+        # detect timestamps, works
+        timestamps = cameradetection.from_video(videopath)
+        print("timestamps done")
+        # cut video, works but video looks a little weird.
+        cameradetection.create_dirs()
+        print("created dirs")
+        cameradetection.cut_ffmpeg(videopath, timestamps)
+        print("cut video")
+        # crop videos
+        cameradetection.crop_from_dir()
+        print("cropped video")
+        # detect players
+        detect()
+        print("detected players")
     # detect numbers and track players
     # transform points
-    all_players = []
-    for part in os.listdir(cameradetection.RESULT_DIR):
-        players = boundingtoposition.projection(part, camera_calibration_matrix)
-        for player in players:
-            all_players.append(player)
+    all_players = transform(camera_calibration_matrix)
     # calculate values
     processed_players = average.process_all(all_players, 30)  # Add detection
+    print("processed players")
     # write values to file
-    average.write_to_file(processed_players, cameradetection.OUTPUT)
+    average.write_to_file(processed_players, cameradetection.OUTPUT_DIR)
+    print("wrote to file")
     # upload values.
-    # clean up
-    cameradetection.remove_dirs()
+    if cleanup:
+        # clean up
+        cameradetection.remove_dirs()
+        print("removed dirs")
+
+
+def transform(camera_calibration_matrix):
+    all_players = []
+    for subdir in os.listdir(cameradetection.RESULT_DIR):
+        subdir_abs = os.path.join(cameradetection.RESULT_DIR, subdir)
+        for part in os.listdir(subdir_abs):
+            part_abs = os.path.join(subdir_abs, part)
+            players = boundingtoposition.projection(part_abs,
+                                                    camera_calibration_matrix)
+            for player in players:
+                all_players.append(player)
+    print("transformed points")
+    return all_players
 
 
 def detect():
@@ -54,7 +73,7 @@ def detect():
 
 
 if __name__ == "__main__":
-    if len(sys.argv) == 2:
-        run(sys.argv[1])
+    if len(sys.argv) == 3:
+        run(sys.argv[1], sys.argv[2], detect=False, cleanup=False)
     else:
         print("Incorrect input. Please give path of video")

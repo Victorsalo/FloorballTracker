@@ -154,7 +154,7 @@ def crop_ffmpeg(videopath, roi=None, order="", output=CROP_DIR):
     return roi
 
 
-def crop_from_dir(videopath, video_dir=CUT_DIR):
+def crop_from_dir(video_dir=CUT_DIR):
     parts = os.listdir(video_dir)
     parts_abs = [os.path.join(video_dir, part) for part in parts]
     roi = crop_ffmpeg(parts_abs[0])

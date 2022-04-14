@@ -5,9 +5,9 @@ In its second version it is to be used on a video file.
 """
 import subprocess
 import os
+import math
 import shlex
 import shutil
-# import numpy as np
 import cv2 as cv
 from sys import argv
 
@@ -46,9 +46,15 @@ def find_difference(img1, img2, roi):
 
 
 def setupROI(img):
-    roi = cv.selectROI("Select ROI", img, False)
+    img_resize = cv.resize(img, (1280, 720), cv.INTER_LINEAR)
+    roi = cv.selectROI("Select ROI", img_resize, False)
     cv.destroyWindow("Select ROI")
-    return roi
+    xscale = img.shape[0]/img_resize.shape[0]
+    yscale = img.shape[1]/img_resize.shape[1]
+    new_roi = [0]*4
+    new_roi[0::2] = [math.floor(x*xscale) for x in roi[0::2]]
+    new_roi[1::2] = [math.floor(y*yscale) for y in roi[1::2]]
+    return new_roi
 
 
 def extractROI(img, roi):

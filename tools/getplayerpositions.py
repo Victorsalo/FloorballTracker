@@ -22,7 +22,7 @@ def run(videopath, camera_calibration_matrix, detect=True, cleanup=True):
         cameradetection.crop_from_dir()
         print("cropped video")
         # detect players
-        detect()
+        detection()
         print("detected players")
     # detect numbers and track players
     # transform points
@@ -54,7 +54,7 @@ def transform(camera_calibration_matrix):
     return all_players
 
 
-def detect():
+def detection():
     orig_path = os.getcwd()
     track_dir = join(cameradetection.ROOT_DIR, "Yolov5_DeepSort_Pytorch")
     os.chdir(track_dir)
@@ -74,6 +74,14 @@ def detect():
 
 if __name__ == "__main__":
     if len(sys.argv) == 3:
+        run(sys.argv[1], sys.argv[2])
+    elif len(sys.argv) == 4 and sys.argv[3] == "--nodetect":
+        run(sys.argv[1], sys.argv[2], detect=False)
+    elif len(sys.argv) == 4 and sys.argv[3] == "--nocleanup":
+        run(sys.argv[1], sys.argv[2], cleanup=False)
+    elif len(sys.argv) == 5 and sys.argv[3] == "--nodetect" and sys.argv[4] == "--nocleanup":
+        run(sys.argv[1], sys.argv[2], detect=False, cleanup=False)
+    elif len(sys.argv) == 5 and sys.argv[4] == "--nodetect" and sys.argv[3] == "--nocleanup":
         run(sys.argv[1], sys.argv[2], detect=False, cleanup=False)
     else:
         print("Incorrect input. Please give path of video")

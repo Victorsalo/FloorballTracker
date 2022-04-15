@@ -150,10 +150,7 @@ def crop_ffmpeg(videopath, roi=None, order="", output=CROP_DIR):
             exit()
         success, frame = video.read()
         roi = setupROI(frame)
-    xstart = roi[0]
-    ystart = roi[1]
-    width = roi[2]
-    hight = roi[3]
+    xstart, ystart, width, hight = roi[0], roi[1], roi[2], roi[3]
     part_name = os.path.join(output, file_name + order + format)
     process = f"ffmpeg -i {videopath} -filter:v 'crop={width}:{hight}:{xstart}:{ystart}' {part_name}"
     subprocess.call(shlex.split(process))
@@ -197,9 +194,6 @@ def create_dirs():
 
 
 def remove_dirs():
-    """
-    TODO: Should remove the dirs, and their content, created by create_dirs().
-    """
     shutil.rmtree(TMP_DIR)
 
 

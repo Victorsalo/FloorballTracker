@@ -18,7 +18,8 @@ def run(videopath, tool=None, timestamps=None):
         tool = os.path.join(tool, "yolov5")
         tool = os.path.join(tool, "detect.py")
     createdirs()
-    cropandcut(videopath, FRAMES_DIR)
+    if not os.path.exists(FRAMES_DIR):
+        cropandcut(videopath, FRAMES_DIR)
     process = f"python {tool} --source {FRAMES_DIR} --save-crop --nosave \
                 --classes 0 --project {OUTPUT_DIR} --name run"
     subprocess.run(shlex.split(process), check=True)

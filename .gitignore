@@ -1,5 +1,6 @@
 # Specific to FloorballTracker
 output/
+people/
 tmp/
 videos/personal
 .DS_Store

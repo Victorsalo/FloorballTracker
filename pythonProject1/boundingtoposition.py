@@ -2,15 +2,15 @@ import numpy as np
 import cv2
 import yaml
 import pandas
-
+import calCordinates
 # Punkter i planet för att calibrera homografi
 import average
 
-points1 = np.array([(0, 5.1), (0, 0), (5.9, 0), (5.9, 5.1)])
+points1 = np.array([(0, 0), (4, 0), (4, 5), (0, 5)])
 points1 = np.float32(points1[:, np.newaxis, :])
 
 # Punkter i videon för att hitta homografi
-points2 = np.array([(532, 437), (707, 239), (1137, 197), (1299, 407)])
+points2 = np.array(calCordinates.calCordinates())
 points2 = np.float32(points2[:, np.newaxis, :])
 
 

@@ -1,15 +1,6 @@
 # importing the module
 import cv2
 
-vidcap = cv2.VideoCapture('gear360FisheyeKarhall.mp4')
-success,image = vidcap.read()
-count = 0
-success = True
-
-success,image = vidcap.read()
-cv2.imwrite("frame%d.jpg" % count, image)     # save frame as JPEG file
-
-
 
 
 
@@ -18,11 +9,13 @@ cv2.imwrite("frame%d.jpg" % count, image)     # save frame as JPEG file
 # of the points clicked on the image
 def click_event(event, x, y, flags, params):
     # checking for left mouse clicks
+    img = params[0]
+    coordinates = params[1]
     if event == cv2.EVENT_LBUTTONDOWN:
         # displaying the coordinates
         # on the Shell
         print(x, ' ', y)
-
+        coordinates.append((x, y))
         # displaying the coordinates
         # on the image window
         font = cv2.FONT_HERSHEY_SIMPLEX
@@ -51,7 +44,17 @@ def click_event(event, x, y, flags, params):
 
 
 # driver function
-if __name__ == "__main__":
+def calCordinates(videopath):
+    vidcap = cv2.VideoCapture(videopath)
+    success, image = vidcap.read()
+    count = 0
+    success = True
+    coordinates = []
+    counter = 0
+
+    success, image = vidcap.read()
+    cv2.imwrite("frame%d.jpg" % count, image)  # save frame as JPEG file
+
     # reading the image
     img = cv2.imread('frame0.jpg', 1)
 
@@ -60,10 +63,15 @@ if __name__ == "__main__":
 
     # setting mouse handler for the image
     # and calling the click_event() function
-    cv2.setMouseCallback('image', click_event)
+    cv2.setMouseCallback('image', click_event, (img, coordinates))
 
     # wait for a key to be pressed to exit
     cv2.waitKey(0)
 
     # close the window
     cv2.destroyAllWindows()
+
+    return coordinates
+
+if __name__ == '__main__':
+    print(calCordinates('/Users/pontusjohansson/Documents/FloorballTracker/videos/personal/gear360FisheyeKarhall.mp4'))

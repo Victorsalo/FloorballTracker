@@ -5,13 +5,14 @@ import pandas
 import calCordinates
 # Punkter i planet för att calibrera homografi
 import average
+def setup(videopath):
+    points1 = np.array([(0, 0), (4, 0), (4, 5), (0, 5)])
+    points1 = np.float32(points1[:, np.newaxis, :])
 
-points1 = np.array([(0, 0), (4, 0), (4, 5), (0, 5)])
-points1 = np.float32(points1[:, np.newaxis, :])
-
-# Punkter i videon för att hitta homografi
-points2 = np.array(calCordinates.calCordinates())
-points2 = np.float32(points2[:, np.newaxis, :])
+    # Punkter i videon för att hitta homografi
+    points2 = np.array(calCordinates.calCordinates())
+    points2 = np.float32(points2[:, np.newaxis, :])
+    return points2
 
 
 #kalibreringsfil för kameran.
@@ -34,6 +35,7 @@ def read_calibration_matrix(calibration_matrix_yaml):
 
 
 def find_homography(points2, calibration_matrix_yaml):
+    points1 = np.array([(0, 0), (4, 0), (4, 5), (0, 5)])
     newcameramtx, mtx, dist = read_calibration_matrix(calibration_matrix_yaml)
     # Undistort punkterna som används för att hitta homografi. Koregerar för fisheye
     dstttt = cv2.undistortPoints(points2, mtx, dist, None, newcameramtx)
@@ -55,7 +57,7 @@ def Read(bounding_box_txt):
     BusDataFrame = pandas.DataFrame(BusDataReshaped, columns=['f', 'id', 'x', 'y', 'w', 'h', 'u1', 'u2', 'u3', 'u4'])
     return BusDataFrame
 
-def projection(bounding_box_txt, calibration_matrix_yaml ):
+def projection(bounding_box_txt, calibration_matrix_yaml, points2 ):
     newcameramtx, mtx, dist = read_calibration_matrix(calibration_matrix_yaml)
     homographymatrix, dsttt = find_homography(points2, calibration_matrix_yaml)
 

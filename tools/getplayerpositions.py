@@ -26,7 +26,7 @@ def run(videopath, camera_calibration_matrix, detect=True, cleanup=True):
         print("detected players")
     # detect numbers and track players
     # transform points
-    all_players = transform(camera_calibration_matrix)
+    all_players = transform(camera_calibration_matrix, videopath)
     # calculate values
     processed_players = average.process_all(all_players, 30)  # Add detection
     print("processed players")
@@ -40,14 +40,16 @@ def run(videopath, camera_calibration_matrix, detect=True, cleanup=True):
         print("removed dirs")
 
 
-def transform(camera_calibration_matrix):
+def transform(camera_calibration_matrix, videopath):
     all_players = []
+    calibration_points = boundingtoposition.setup(videopath)
     for subdir in os.listdir(cameradetection.RESULT_DIR):
         subdir_abs = os.path.join(cameradetection.RESULT_DIR, subdir)
         for part in os.listdir(subdir_abs):
             part_abs = os.path.join(subdir_abs, part)
             players = boundingtoposition.projection(part_abs,
-                                                    camera_calibration_matrix)
+                                                    camera_calibration_matrix,
+                                                    calibration_points)
             for player in players:
                 all_players.append(player)
     print("transformed points")

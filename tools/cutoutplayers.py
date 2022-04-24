@@ -18,7 +18,7 @@ def run(videopath, tool=None, timestamps=None):
         tool = os.path.join(tool, "yolov5")
         tool = os.path.join(tool, "detect.py")
     createdirs()
-    if not os.path.exists(FRAMES_DIR):
+    if len(os.listdir(FRAMES_DIR)) == 0:
         cropandcut(videopath, FRAMES_DIR)
     process = f"python {tool} --source {FRAMES_DIR} --save-crop --nosave \
                 --classes 0 --project {OUTPUT_DIR} --name run"

@@ -41,7 +41,7 @@ def estimate_speed(xs, ys, fps):
     return speeds
 
 
-def estimate_acceleration(speeds, fps):
+def estimate_acceleration(xs, ys, fps):
     """
     Estimates the acceleration of an object given its speeds at diffrent
     times and their recording speed.
@@ -51,11 +51,12 @@ def estimate_acceleration(speeds, fps):
     fps -- The speed at which the points were recorded.
     """
 
-    accelerations = np.zeros(len(speeds))
+    accelerations = np.zeros(len(xs))
     deltat = 1/fps
-    for i in range(len(speeds)-1):
-        accelerations[i] = (speeds[i+1]-speeds[i])/deltat
-    # accelerations[-1] = accelerations[-2]
+    for i in range(2, len(xs)-1):
+        xacc = (xs[i+1]-2*xs[i]+xs[i-1])/(deltat**2)
+        yacc = (ys[i+1]-2*ys[i]+ys[i-1])/(deltat**2)
+        accelerations[i] = sqrt(xacc**2+yacc**2)
     return accelerations
 
 

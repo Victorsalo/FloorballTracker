@@ -10,7 +10,7 @@ def setup(videopath):
     points1 = np.float32(points1[:, np.newaxis, :])
 
     # Punkter i videon för att hitta homografi
-    points2 = np.array(calCordinates.calCordinates())
+    points2 = np.array(calCordinates.calCordinates(videopath))
     points2 = np.float32(points2[:, np.newaxis, :])
     return points2
 
@@ -45,14 +45,12 @@ def find_homography(points2, calibration_matrix_yaml):
 
 
 def Read(bounding_box_txt):
-
-
     X = open(bounding_box_txt, 'r')
     BusData = X.read()
 
     BusDataList = BusData.split()
     BusDataArray = np.array(BusDataList)
-    num_lines = sum(1 for line in open('gear360FisheyeKarhall.txt'))
+    num_lines = sum(1 for line in open(bounding_box_txt))
     BusDataReshaped = BusDataArray.reshape(num_lines, 10)  # Make a matrix out of 1D Array
     BusDataFrame = pandas.DataFrame(BusDataReshaped, columns=['f', 'id', 'x', 'y', 'w', 'h', 'u1', 'u2', 'u3', 'u4'])
     return BusDataFrame
@@ -123,12 +121,8 @@ def projection(bounding_box_txt, calibration_matrix_yaml, points2 ):
 
     return playerData
 
-playerData = projection("gear360FisheyeKarhall.txt", "calibration_matrix.yaml")
-playerData = average.process_all(playerData, 60)
-playerData = average.round_data(playerData)
-average.write_to_file(playerData)
+# playerData = projection("gear360FisheyeKarhall.txt", "calibration_matrix.yaml")
+# playerData = average.process_all(playerData, 60)
+# playerData = average.round_data(playerData)
+# average.write_to_file(playerData)
 # done
-
-
-
-

@@ -78,7 +78,7 @@ def process_all(all_player_data, fps):
         xs = moving_average(player[1][1], 6)
         ys = moving_average(player[1][2], 6)
         speeds = estimate_speed(xs, ys, fps)
-        accelerations = estimate_acceleration(speeds, fps)
+        accelerations = estimate_acceleration(xs, ys, fps)
         processed_players.append([player[0], [player[1][0],
                                   xs, ys, speeds, accelerations]])
     return processed_players
@@ -103,7 +103,8 @@ def write_to_file(processed_players, directory):
     """
 
     taken = set()
-    for player in processed_players:
+    rounded_players = round_data(processed_players)
+    for player in rounded_players:
         id = player[0]
         while id in taken:
             id += 100

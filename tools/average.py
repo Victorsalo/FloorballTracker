@@ -83,7 +83,6 @@ def process_all(all_player_data, fps):
                                   xs, ys, speeds, accelerations]])
     return processed_players
 
-<<<<<<< Updated upstream
 
 # [round(x, 0) for x in values]
 # [[playernumber, [[frame,], [x,], [y,], [speed,], [acceleration,]]],]

@@ -74,9 +74,10 @@ def process_all(all_player_data, fps):
     """
 
     processed_players = []
+    smoothing = 6
     for player in all_player_data:
-        xs = moving_average(player[1][1], 6)
-        ys = moving_average(player[1][2], 6)
+        xs = moving_average(player[1][1], smoothing)
+        ys = moving_average(player[1][2], smoothing)
         speeds = estimate_speed(xs, ys, fps)
         accelerations = estimate_acceleration(xs, ys, fps)
         processed_players.append([player[0], [player[1][0],

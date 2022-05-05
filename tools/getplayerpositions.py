@@ -6,6 +6,9 @@ import shlex
 import cameradetection
 import average
 import boundingtoposition
+import firebase_admin
+import google.cloud
+from firebase_admin import credentials, firestore
 
 
 def run(videopath, camera_calibration_matrix, detect=True, cleanup=True):
@@ -72,6 +75,28 @@ def detection():
                 )
         subprocess.run(shlex.split(command))
     os.chdir(orig_path)
+
+
+def send_to_firebase(processed_players, cert):
+    cred = credentials.Certificate(cert)
+    app = firebase_admin.initialize_app(cred)
+    store = firestore.client()
+# [[playernumber, [[frame,], [x,], [y,], [speed,], [acceleration,]]],]
+    labels = ["frame", "x", "y", "speed", "acceleration"]
+    collection_list = store.collections()
+    idcols = [int(col.id[5:]) for col in collection_list if col.id.startswith("Match")]
+    if len(idcols) == 0:
+        new_col_number = 0
+    else:
+        new_col_number = idcols.sort()[-1]+1
+    collection_name = f"Match{new_col_number}"
+    collection = store.collection(collection_name)
+    for datapoints in processed_players:
+        data = {}
+        name = str(datapoints[0])
+        for i in range(len(labels)):
+            data[labels[i]] = datapoints[1][i]
+        collection.document(name).set(data)
 
 
 if __name__ == "__main__":

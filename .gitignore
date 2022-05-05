@@ -4,6 +4,8 @@ people/
 tmp/
 videos/personal
 .DS_Store
+firebase-key.json
+firebase-key.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

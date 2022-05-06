@@ -31,7 +31,23 @@ def read_calibration_matrix(calibration_matrix_yaml):
     dist = np.array(dist)
     return newcameramtx, mtx, dist
 
-
+def undistort(videopath, calibration_matrix_yaml, output_name):
+    cap = cv2.VideoCapture(videopath)
+    fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+    height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+    writer = cv2.VideoWriter(output_name, fourcc, fps, (width, height))
+    newcameramtx, mtx, dist = read_calibration_matrix(calibration_matrix_yaml)
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+        frame = cv2.undistort(frame, mtx, dist, None, newcameramtx)
+        writer.write(frame)
+    cap.release()
+    writer.release()
+    
 
 
 def find_homography(points2, calibration_matrix_yaml):

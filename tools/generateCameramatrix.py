@@ -14,7 +14,7 @@ objp[:,:2] = np.mgrid[0:7,0:7].T.reshape(-1,2)
 objpoints = [] # 3d point in real world space
 imgpoints = [] # 2d points in image plane.
 
-images = glob.glob(r'chessboard/*.JPG')
+images = glob.glob(r'../images/chessboard/*.JPG')
 
 # path = 'results'
 # pathlib.Path(path).mkdir(parents=True, exist_ok=True)
@@ -35,7 +35,7 @@ for fname in images:  # Here, 10 can be changed to whatever number you like to c
         img = cv2.drawChessboardCorners(img, (7,7), corners2, ret)
         found += 1
         cv2.imshow('img', img)
-        #cv2.waitKey(500)
+        cv2.waitKey(5)
         # if you want to save images with detected corners
         # uncomment following 2 lines and lines 5, 18 and 19
         # image_name = path + '/calibresult' + str(found) + '.png'
@@ -49,7 +49,7 @@ cv2.destroyAllWindows()
 
 # calibration
 ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
-img = cv2.imread('fisheyePicture.JPG')
+img = cv2.imread('/Users/pontusjohansson/PycharmProjects/pythonProject3/fisheyePicture.JPG')
 h,  w = img.shape[:2]
 newcameramtx, roi = cv2.getOptimalNewCameraMatrix(mtx, dist, (w,h), 1, (w,h))
 

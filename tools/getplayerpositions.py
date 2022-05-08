@@ -3,6 +3,7 @@ import sys
 import os
 from os.path import join
 import shlex
+import shutil
 import cameradetection
 import average
 import boundingtoposition
@@ -11,16 +12,21 @@ import google.cloud
 from firebase_admin import credentials, firestore
 
 
-def run(videopath, camera_calibration_matrix, detect=True, cleanup=True):
+def run(videopath, camera_calibration_matrix, cut=True, detect=True, cleanup=True):
     if detect:
-        # detect timestamps, works
-        timestamps = cameradetection.from_video(videopath)
-        print("timestamps done")
-        # cut video, works but video looks a little weird.
         cameradetection.create_dirs()
-        print("created dirs")
-        cameradetection.cut_ffmpeg(videopath, timestamps)
-        print("cut video")
+        # detect timestamps, works
+        if cut:
+            timestamps = cameradetection.from_video(videopath)
+            print("timestamps done")
+            # cut video, works but video looks a little weird.
+            print("created dirs")
+            cameradetection.cut_ffmpeg(videopath, timestamps)
+            print("cut video")
+        else:
+            file_name = os.path.basename(videopath)
+            absolute_file_name = os.path.join(cameradetection.CUT_DIR, file_name)
+            shutil.copy(videopath, absolute_file_name)
         # crop videos
         cameradetection.crop_from_dir()
         print("cropped video")
@@ -102,6 +108,8 @@ def send_to_firebase(processed_players, cert):
 if __name__ == "__main__":
     if len(sys.argv) == 3:
         run(sys.argv[1], sys.argv[2])
+    elif len(sys.argv) == 4 and sys.argv[3] == "--nocut":
+        run(sys.argv[1], sys.argv[2], cut=False)
     elif len(sys.argv) == 4 and sys.argv[3] == "--nodetect":
         run(sys.argv[1], sys.argv[2], detect=False)
     elif len(sys.argv) == 4 and sys.argv[3] == "--nocleanup":

@@ -37,6 +37,8 @@ def estimate_speed(xs, ys, fps):
     for i in range(len(xs)-1):
         dist = sqrt((xs[i+1]-xs[i])**2 + (ys[i+1]-ys[i])**2)
         speeds[i] = dist/deltat
+    if len(speeds) < 2:
+        breakpoint()
     speeds[-1] = speeds[-2]
     return speeds
 
@@ -60,7 +62,7 @@ def estimate_acceleration(xs, ys, fps):
     return accelerations
 
 
-def process_all(all_player_data, fps):
+def process_all(all_player_data, fps, smoothing=6):
     """
     Uses data on the form [[playernumber, [[frame,], [x,], [y,]]],] to obtain
     a smoothed out version along with the speed and acceleration. Data is
@@ -74,8 +76,7 @@ def process_all(all_player_data, fps):
     """
 
     processed_players = []
-    smoothing = 6
-    for player in all_player_data:
+    for player in [player for player in all_player_data if len(player[1][1]) > 2]:
         xs = moving_average(player[1][1], smoothing)
         ys = moving_average(player[1][2], smoothing)
         speeds = estimate_speed(xs, ys, fps)

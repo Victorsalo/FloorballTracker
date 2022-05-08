@@ -59,7 +59,7 @@ def transform(camera_calibration_matrix, videopath):
     return all_players
 
 
-def detection():
+def detection(yolo_model="yolov5n.pt"):
     orig_path = os.getcwd()
     track_dir = join(cameradetection.ROOT_DIR, "Yolov5_DeepSort_Pytorch")
     os.chdir(track_dir)
@@ -69,7 +69,7 @@ def detection():
         track_tool = join(track_dir, "track.py")
         command = (
                 f"python3 {track_tool} --source {abs_path_part} "
-                "--yolo_model yolov5n.pt --classes 0 --save-txt "
+                f"--yolo_model {yolo_model} --classes 0 --save-txt "
                 f"--project {cameradetection.RESULT_DIR} "
                 "--name test --exist-ok"
                 )

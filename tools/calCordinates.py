@@ -1,10 +1,6 @@
 # importing the module
 import cv2
 
-
-
-
-
 # function to display the coordinates of
 # of the points clicked on the image
 def click_event(event, x, y, flags, params):
@@ -72,6 +68,7 @@ def calCordinates(videopath):
     cv2.destroyAllWindows()
 
     return coordinates
+
 
 if __name__ == '__main__':
     print(calCordinates('/Users/pontusjohansson/Documents/FloorballTracker/videos/personal/gear360FisheyeKarhall.mp4'))

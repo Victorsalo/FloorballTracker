@@ -79,7 +79,7 @@ def detection(yolo_model="yolov5n.pt"):
                 f"--project {cameradetection.RESULT_DIR} "
                 "--name test --exist-ok"
                 )
-        subprocess.run(shlex.split(command))
+        subprocess.run(shlex.split(command), check=True)
     os.chdir(orig_path)
 
 

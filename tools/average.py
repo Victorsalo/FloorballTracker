@@ -2,7 +2,7 @@ from math import sqrt
 import os
 import csv
 import numpy as np
-from scipy.ndimage.filters import uniform_filter1d
+from scipy.ndimage import uniform_filter1d
 
 
 def moving_average(points, smoothing):
@@ -18,7 +18,6 @@ def moving_average(points, smoothing):
     return uniform_filter1d(points, size=smoothing, mode="nearest")
 
 
-# TODO: Change to a better speed formula.
 def estimate_speed(xs, ys, fps):
     """
     Estimates the speed of an object given its cordinates and their
@@ -37,8 +36,6 @@ def estimate_speed(xs, ys, fps):
     for i in range(len(xs)-1):
         dist = sqrt((xs[i+1]-xs[i])**2 + (ys[i+1]-ys[i])**2)
         speeds[i] = dist/deltat
-    if len(speeds) < 2:
-        breakpoint()
     speeds[-1] = speeds[-2]
     return speeds
 

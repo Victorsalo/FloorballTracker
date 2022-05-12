@@ -49,10 +49,11 @@ def calCordinates(videopath):
     counter = 0
 
     success, image = vidcap.read()
-    cv2.imwrite("frame%d.jpg" % count, image)  # save frame as JPEG file
+    # cv2.imwrite("frame%d.jpg" % count, image)  # save frame as JPEG file
 
     # reading the image
-    img = cv2.imread('frame0.jpg', 1)
+    # img = cv2.imread('frame0.jpg', 1)
+    img = image
 
     # displaying the image
     cv2.imshow('image', img)

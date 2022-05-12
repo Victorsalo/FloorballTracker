@@ -53,8 +53,8 @@ def undistort(videopath, calibration_matrix_yaml, output_name):
     writer.release()
 
 
-def find_homography(points2, calibration_matrix_yaml):
-    points1 = np.array([(0, 0), (4, 0), (4, 5), (0, 5)])
+def find_homography(points2, calibration_matrix_yaml, points1=[(0, 0), (4, 0), (4, 5), (0, 5)]):
+    points1 = np.array(points1)
     newcameramtx, mtx, dist = read_calibration_matrix(calibration_matrix_yaml)
     # Undistort punkterna som anvands for att hitta homografi. Koregerar for fisheye
     dstttt = cv2.undistortPoints(points2, mtx, dist, None, newcameramtx)
@@ -74,9 +74,12 @@ def Read(bounding_box_txt):
     return BusDataFrame
 
 
-def projection(bounding_box_txt, calibration_matrix_yaml, points2):
+def projection(bounding_box_txt, calibration_matrix_yaml, points2, points1=None):
     newcameramtx, mtx, dist = read_calibration_matrix(calibration_matrix_yaml)
-    homographymatrix, dsttt = find_homography(points2, calibration_matrix_yaml)
+    if points1 is not None:
+        homographymatrix, dsttt = find_homography(points2, calibration_matrix_yaml, points1)
+    else:
+        homographymatrix, dsttt = find_homography(points2, calibration_matrix_yaml)
     BusDataFrame = Read(bounding_box_txt)
     numberOfId = 0
     for j in range(sum(1 for line in open(bounding_box_txt))):
@@ -88,7 +91,7 @@ def projection(bounding_box_txt, calibration_matrix_yaml, points2):
         individualPlayerData = []
         frames = []
         for j in range(sum(1 for line in open(bounding_box_txt))):
-            if int(BusDataFrame.id[j]) == i + 1 :
+            if int(BusDataFrame.id[j]) == i + 1:
                 cordinates.append((int(BusDataFrame.x[j]) + (int(BusDataFrame.w[j]) / 2), int(BusDataFrame.y[j]) + int(BusDataFrame.h[j])))
                 frames.append(int(BusDataFrame.f[j]))
                 # print(cordinates)

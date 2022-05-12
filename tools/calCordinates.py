@@ -1,73 +1,38 @@
-# importing the module
 import cv2
 
-# function to display the coordinates of
-# of the points clicked on the image
+
 def click_event(event, x, y, flags, params):
-    # checking for left mouse clicks
-    img = params[0]
+
+    bild = params[0]
     coordinates = params[1]
     if event == cv2.EVENT_LBUTTONDOWN:
-        # displaying the coordinates
-        # on the Shell
         print(x, ' ', y)
         coordinates.append((x, y))
-        # displaying the coordinates
-        # on the image window
         font = cv2.FONT_HERSHEY_SIMPLEX
-        cv2.putText(img, str(x) + ',' +
-                    str(y), (x, y), font,
-                    1, (255, 0, 0), 2)
-        cv2.imshow('image', img)
-
-    # checking for right mouse clicks
+        cv2.putText(bild, str(x) + ',' + str(y), (x, y), font, 1, (255, 0, 0), 2)
+        cv2.imshow('img', bild)
     if event == cv2.EVENT_RBUTTONDOWN:
-        # displaying the coordinates
-        # on the Shell
         print(x, ' ', y)
-
-        # displaying the coordinates
-        # on the image window
         font = cv2.FONT_HERSHEY_SIMPLEX
-        b = img[y, x, 0]
-        g = img[y, x, 1]
-        r = img[y, x, 2]
-        cv2.putText(img, str(b) + ',' +
-                    str(g) + ',' + str(r),
-                    (x, y), font, 1,
-                    (255, 255, 0), 2)
-        cv2.imshow('image', img)
+        g = bild[y, x, 0]
+        k = bild[y, x, 1]
+        l = bild[y, x, 2]
+        cv2.putText(bild, str(g) + ',' + str(k) + ',' + str(l), (x, y), font, 1, (255, 255, 0), 2)
+        cv2.imshow('img', bild)
 
-
-# driver function
 def calCordinates(videopath):
     vidcap = cv2.VideoCapture(videopath)
-    success, image = vidcap.read()
-    count = 0
-    success = True
+    funkar, img = vidcap.read()
+    antal = 0
+    funkar = True
     coordinates = []
     counter = 0
 
-    success, image = vidcap.read()
-    # cv2.imwrite("frame%d.jpg" % count, image)  # save frame as JPEG file
-
-    # reading the image
-    # img = cv2.imread('frame0.jpg', 1)
-    img = image
-
-    # displaying the image
-    cv2.imshow('image', img)
-
-    # setting mouse handler for the image
-    # and calling the click_event() function
-    cv2.setMouseCallback('image', click_event, (img, coordinates))
-
-    # wait for a key to be pressed to exit
+    _, img = vidcap.read()
+    cv2.imshow('img', img)
+    cv2.setMouseCallback('img', click_event, (img, coordinates))
     cv2.waitKey(0)
-
-    # close the window
     cv2.destroyAllWindows()
-
     return coordinates
 
 
